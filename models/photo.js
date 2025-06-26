@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const PhotoSchema = new mongoose.Schema({
   title: { type: String, required: true },
   imgUrl: { type: String, required: true }, 
+  date: { type: Date, required: true },
   createdAt: { type: Date, default: Date.now }, 
   description: { type: String, required: true }
 });
