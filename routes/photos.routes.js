@@ -1,5 +1,5 @@
 const express = require('express');
-const Photo = require('../models/Photo');
+const Photo = require('../models/Photo')
 const parser = require('../config/upload');
 const cloudinary = require('../config/cloudinary');
 const multer = require('multer');
