@@ -16,17 +16,17 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Permitir solicitudes sin origen (como desde Postman)
+    // Permitir sin origin (como Postman o curl)
     if (!origin) return callback(null, true);
 
     if (allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('❌ Origen bloqueado por política CORS: ' + origin));
+      console.warn('❌ Origen bloqueado por CORS:', origin);
+      callback(null, false); // << evita lanzar error
     }
   },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+  credentials: true
 }));
 
 // Middlewares
