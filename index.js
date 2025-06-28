@@ -9,21 +9,17 @@ dotenv.config();
 const app = express();
 
 // 🔐 Configurar CORS dinámico
-const allowedOrigins = [
-  'http://localhost:4200',
-  'https://for-my-girl-angular-front.vercel.app'
-];
-
 app.use(cors({
-  origin: function (origin, callback) {
-    // Permitir sin origin (como Postman o curl)
-    if (!origin) return callback(null, true);
-
-    if (allowedOrigins.includes(origin)) {
+  origin: (origin, callback) => {
+    const allowed = [
+      'http://localhost:4200',
+      'https://for-my-girl-angular-front.vercel.app'
+    ];
+    if (!origin || allowed.includes(origin)) {
       callback(null, true);
     } else {
-      console.warn('❌ Origen bloqueado por CORS:', origin);
-      callback(null, false); // << evita lanzar error
+      console.warn('❌ Origen bloqueado:', origin);
+      callback(null, false);
     }
   },
   credentials: true
