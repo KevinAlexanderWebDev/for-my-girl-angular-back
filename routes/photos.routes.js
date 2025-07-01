@@ -85,21 +85,39 @@ router.post('/', upload.single('image'), async (req, res) => {
   }
 });
 //EDITOR CON PETICION PUT
-  router.put('/:id', async (req, res) => {
+    router.put('/:id', async (req, res) => {
     try {
-      const { title, description, date } = req.body;
+      const { title, description, date, imgUrl } = req.body;
+
+      let secureUrl = imgUrl;
+
+      // 🧠 Si la imagen es base64, subirla a Cloudinary
+      if (imgUrl && imgUrl.startsWith('data:image')) {
+        const uploadResponse = await cloudinary.uploader.upload(imgUrl, {
+          folder: 'for-my-girl',
+        });
+        secureUrl = uploadResponse.secure_url;
+      }
+
+      // 🔁 Actualizar el documento con o sin nueva imagen
       const updatedPhoto = await Photo.findByIdAndUpdate(
         req.params.id,
-        { title, description, date: new Date(date) },
+        {
+          title,
+          description,
+          date: new Date(date),
+          imgUrl: secureUrl, // ← actualizará si hubo nueva imagen
+        },
         { new: true }
       );
-
+      console.log('Datos obtenidos desde el front-end: ', updatedPhoto)
       if (!updatedPhoto) {
         return res.status(404).json({ error: 'Foto no encontrada' });
       }
 
       res.status(200).json(updatedPhoto);
     } catch (error) {
+      console.error('🔥 Error en PUT /:id:', error.message);
       res.status(500).json({ error: 'Error al actualizar la foto: ' + error.message });
     }
   });
